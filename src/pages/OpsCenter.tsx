@@ -9,6 +9,7 @@ import { AgentRoster } from '../components/AgentRoster';
 import { SuggestionCard } from '../components/SuggestionCard';
 import { OrderBoard } from '../components/OrderBoard';
 import { SsePanel } from '../components/SsePanel';
+import { Footer } from '../components/Footer';
 import { showToast } from '../components/Toast';
 
 function computeStats(agents: Agent[], orders: Order[], suggestions: Suggestion[]): DashboardStats {
@@ -356,6 +357,9 @@ export function OpsCenter() {
         {/* ── Full Dispatch Board (UI ceiling) ── */}
         <OrderBoard orders={orders} loading={loading} onStreamClick={handleStreamClick} />
       </div>
+
+      {/* ── Ops Footer ── */}
+      <Footer />
 
       {/* ── Modals & Panels ── */}
       {showCreateOrder && (
