@@ -3,6 +3,7 @@ import type { Order, OrderStatus } from '../types';
 interface Props {
   orders: Order[];
   loading?: boolean;
+  onStreamClick?: (orderId: number) => void;
 }
 
 const COLUMNS: { status: OrderStatus; label: string; color: string }[] = [
@@ -26,7 +27,7 @@ function SlaCountdown({ deadline }: { deadline: string | null }) {
   return <span className={`sla-countdown ${cls}`}>⏱ {label}</span>;
 }
 
-export function OrderBoard({ orders, loading }: Props) {
+export function OrderBoard({ orders, loading, onStreamClick }: Props) {
   const byStatus = COLUMNS.reduce(
     (acc, col) => {
       acc[col.status] = orders.filter((o) => o.status === col.status);
@@ -95,6 +96,18 @@ export function OrderBoard({ orders, loading }: Props) {
                             {order.weightClass}
                           </span>
                         )}
+                      </div>
+                    )}
+                    {onStreamClick && (
+                      <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-end' }}>
+                        <button
+                          className="btn btn-stream"
+                          style={{ fontSize: 11, padding: '4px 10px' }}
+                          onClick={() => onStreamClick(order.id)}
+                          title="Stream AI reassignment reasoning live via SSE"
+                        >
+                          ⚡ AI Stream
+                        </button>
                       </div>
                     )}
                   </div>

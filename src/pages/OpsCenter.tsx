@@ -334,7 +334,7 @@ export function OpsCenter() {
         </div>
 
         {/* ── Full Dispatch Board (UI ceiling) ── */}
-        <OrderBoard orders={orders} loading={loading} />
+        <OrderBoard orders={orders} loading={loading} onStreamClick={handleStreamClick} />
       </div>
 
       {/* ── Modals & Panels ── */}
