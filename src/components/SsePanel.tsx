@@ -67,7 +67,15 @@ export function SsePanel({ state, onClose, onAccept }: Props) {
                 {tokenCount} tokens
               </span>
             )}
-            <button className="btn btn-ghost sse-close-btn" onClick={onClose} title="Close (Esc)">
+            <button
+              type="button"
+              className="btn btn-ghost sse-close-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
+              title="Close (Esc)"
+            >
               ✕
             </button>
           </div>
@@ -82,7 +90,6 @@ export function SsePanel({ state, onClose, onAccept }: Props) {
               <span className="dot dot-green" />
             </div>
             <span className="sse-terminal-label">dispatch_reasoning_stream.log</span>
-            <span className="sse-terminal-model">Gemini 1.5 Flash / Groq Llama 3.1</span>
           </div>
 
           <div className="sse-terminal-body">

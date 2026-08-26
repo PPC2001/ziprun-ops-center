@@ -155,6 +155,7 @@ export function OpsCenter() {
   const [showCreateOrder, setShowCreateOrder] = useState(false);
   const [activeTab, setActiveTab] = useState<'pending' | 'all'>('pending');
   const [streamOrderId, setStreamOrderId] = useState<number | null>(null);
+  const [showAiStream, setShowAiStream] = useState(false);
 
   const sse = useSseStream(streamOrderId);
 
@@ -210,7 +211,14 @@ export function OpsCenter() {
 
   const handleStreamClick = (orderId: number) => {
     setStreamOrderId(orderId);
+    setShowAiStream(true);
     sse.startStream(orderId);
+  };
+
+  const handleCloseStream = () => {
+    setShowAiStream(false);
+    sse.stopStream();
+    setStreamOrderId(null);
   };
 
   const stats = computeStats(agents, orders, suggestions);
@@ -358,14 +366,13 @@ export function OpsCenter() {
         />
       )}
 
-      <SsePanel
-        state={sse}
-        onClose={() => {
-          sse.stopStream();
-          setStreamOrderId(null);
-        }}
-        onAccept={handleAcceptSuggestion}
-      />
+      {showAiStream && (
+        <SsePanel
+          state={sse}
+          onClose={handleCloseStream}
+          onAccept={handleAcceptSuggestion}
+        />
+      )}
     </div>
   );
 }

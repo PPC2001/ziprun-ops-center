@@ -68,7 +68,7 @@ export function useSseStream(initialOrderId: number | null) {
   const stopStream = () => {
     esRef.current?.close();
     esRef.current = null;
-    setState((prev) => ({ ...prev, isStreaming: false }));
+    setState({ isStreaming: false, tokens: '', suggestion: null, error: null });
   };
 
   useEffect(() => () => { esRef.current?.close(); }, []);
