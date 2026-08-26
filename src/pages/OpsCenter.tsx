@@ -200,7 +200,7 @@ export function OpsCenter() {
 
   const handleStreamClick = (orderId: number) => {
     setStreamOrderId(orderId);
-    sse.startStream();
+    sse.startStream(orderId);
   };
 
   const stats = computeStats(agents, orders, suggestions);

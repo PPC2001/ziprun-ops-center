@@ -8,7 +8,9 @@ export interface SseState {
   error: string | null;
 }
 
-export function useSseStream(orderId: number | null) {
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+
+export function useSseStream(initialOrderId: number | null) {
   const [state, setState] = useState<SseState>({
     isStreaming: false,
     tokens: '',
@@ -17,14 +19,14 @@ export function useSseStream(orderId: number | null) {
   });
   const esRef = useRef<EventSource | null>(null);
 
-  const startStream = () => {
-    if (!orderId || esRef.current) return;
+  const startStream = (orderIdParam?: number) => {
+    const targetId = orderIdParam || initialOrderId;
+    if (!targetId || esRef.current) return;
 
     setState({ isStreaming: true, tokens: '', suggestion: null, error: null });
 
-    const es = new EventSource(
-      `http://localhost:8080/api/orders/${orderId}/suggest/stream`
-    );
+    const cleanBase = API_BASE.replace(/\/$/, '');
+    const es = new EventSource(`${cleanBase}/orders/${targetId}/suggest/stream`);
     esRef.current = es;
 
     es.addEventListener('token', (e) => {
