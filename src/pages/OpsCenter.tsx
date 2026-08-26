@@ -198,6 +198,16 @@ export function OpsCenter() {
     await refresh();
   };
 
+  const handleAcceptSuggestion = async (id: number) => {
+    try {
+      await suggestionApi.resolve(id, 'ACCEPTED');
+      showToast('✓ Suggestion accepted — order reassigned!', 'success');
+      await refresh();
+    } catch (e: unknown) {
+      showToast((e as Error).message || 'Failed to accept suggestion', 'error');
+    }
+  };
+
   const handleStreamClick = (orderId: number) => {
     setStreamOrderId(orderId);
     sse.startStream(orderId);
@@ -221,10 +231,10 @@ export function OpsCenter() {
         <div className="header-actions">
           <div className="live-indicator">
             <div className="live-dot" />
-            Live · 5s poll
+            <span className="live-text">Live · 5s poll</span>
           </div>
-          <button className="btn btn-secondary" onClick={refresh}>↻ Refresh</button>
-          <button className="btn btn-primary" onClick={() => setShowCreateOrder(true)}>
+          <button className="btn btn-secondary btn-refresh" onClick={refresh}>↻ Refresh</button>
+          <button className="btn btn-primary btn-new-order" onClick={() => setShowCreateOrder(true)}>
             + New Order
           </button>
         </div>
@@ -270,9 +280,9 @@ export function OpsCenter() {
         {/* ── Main ops grid ── */}
         <div className="ops-grid">
           {/* Left: Suggestions */}
-          <div>
+          <div className="suggestions-section">
             <div className="card-header" style={{ marginBottom: 14 }}>
-              <div style={{ display: 'flex', gap: 8 }}>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <button
                   className={`btn ${activeTab === 'pending' ? 'btn-primary' : 'btn-secondary'}`}
                   style={{ fontSize: 12, padding: '6px 14px' }}
@@ -326,11 +336,13 @@ export function OpsCenter() {
           </div>
 
           {/* Right: Agent Roster */}
-          <AgentRoster
-            agents={agents}
-            onStatusChange={handleAgentStatus}
-            loading={loading}
-          />
+          <div className="fleet-section">
+            <AgentRoster
+              agents={agents}
+              onStatusChange={handleAgentStatus}
+              loading={loading}
+            />
+          </div>
         </div>
 
         {/* ── Full Dispatch Board (UI ceiling) ── */}
@@ -352,6 +364,7 @@ export function OpsCenter() {
           sse.stopStream();
           setStreamOrderId(null);
         }}
+        onAccept={handleAcceptSuggestion}
       />
     </div>
   );
